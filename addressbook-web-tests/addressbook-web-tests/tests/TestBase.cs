@@ -14,15 +14,14 @@ namespace WebAddressbookTests
     public class TestBase
     {
         protected IWebDriver driver;
-        private StringBuilder verificationErrors;
         protected string baseURL;
         protected ApplicationManager app;
 
         [SetUp]
-        public void SetupTest()
+        public void SetUpApplicationManager()
         {
             app = ApplicationManager.GetInstance();
 
-         }
+        }
     }
 }
