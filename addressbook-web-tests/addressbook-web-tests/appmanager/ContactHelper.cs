@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Firefox;
 using OpenQA.Selenium.Support.UI;
+using System.Text.RegularExpressions;
 
 namespace WebAddressbookTests
 {
@@ -59,6 +60,13 @@ namespace WebAddressbookTests
         {
             driver.FindElements(By.Name("entry"))[index].FindElements(By.TagName("td"))[7]
                 .FindElement(By.TagName("a")).Click();
+        }
+
+        public int GetNumberOfSearchResults()
+        {
+            string text = driver.FindElement(By.TagName("label")).Text;
+            Match m = new Regex("\\d + ").Match(text);
+            return Int32.Parse(m.Value); 
         }
     }
 }
