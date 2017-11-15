@@ -7,6 +7,7 @@ using System.Xml.Serialization;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Excel = Microsoft.Office.Interop.Excel;
 using NUnit.Framework;
 
@@ -33,7 +34,7 @@ namespace WebAddressbookTests
         public static IEnumerable<GroupData> GroupDataProviderFromCsvFile()
         {
             List<GroupData> groups = new List<GroupData>();
-            string [] lines = File.ReadAllLines(@"groups.csv");
+            string[] lines = File.ReadAllLines(@"groups.csv");
             foreach (string l in lines)
             {
                 string[] parts = l.Split(',');
@@ -42,15 +43,15 @@ namespace WebAddressbookTests
                     Header = parts[1],
                     Footer = parts[2]
                 });
-             }
+            }
             return groups;
         }
 
         public static IEnumerable<GroupData> GroupDataProviderFromXmlFile()
         {
             List<GroupData> groups = new List<GroupData>();
-            return (List<GroupData>) new XmlSerializer(typeof(List<GroupData>))
-                .Deserialize(new StreamReader(@"groups.xml")); 
+            return (List<GroupData>)new XmlSerializer(typeof(List<GroupData>))
+                .Deserialize(new StreamReader(@"groups.xml"));
         }
 
         public static IEnumerable<GroupData> GroupDataProviderFromJsonFile()
@@ -68,7 +69,7 @@ namespace WebAddressbookTests
 
             for (int i = 1; i <= range.Rows.Count; i++)
             {
-                groups.Add(new GroupData() 
+                groups.Add(new GroupData()
                 {
                     Name = range.Cells[i, 1].Value,
                     Header = range.Cells[i, 2].Value,
@@ -78,8 +79,8 @@ namespace WebAddressbookTests
             wb.Close();
             app.Visible = false;
             app.Quit();
-                          
-            return groups; 
+
+            return groups;
         }
 
         [Test, TestCaseSource("GroupDataProviderFromExcelFile")]
@@ -96,6 +97,24 @@ namespace WebAddressbookTests
             oldGroups.Sort();
             newGroups.Sort();
             Assert.AreEqual(oldGroups, newGroups);
+        }
+
+        [Test]
+        public void TestDbConnectivity()
+        {
+            DateTime start = DateTime.Now;
+            List<GroupData> fromUi = app.Groups.GetGroupList();
+            DateTime end = DateTime.Now;
+            System.Console.Out.WriteLine(end.Subtract(start));
+
+            DateTime startDb = DateTime.Now;
+            using (AddressBookDB db = new AddressBookDB())
+            {
+                List<GroupData> fromDb = (from g in db.Groups select g).ToList();
+            }
+            DateTime endDb = DateTime.Now;
+            System.Console.Out.WriteLine(endDb.Subtract(startDb));
+
         }
     }
 }
