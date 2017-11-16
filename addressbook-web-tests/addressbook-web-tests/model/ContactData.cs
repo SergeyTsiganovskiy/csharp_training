@@ -4,12 +4,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
+using LinqToDB.Mapping;
 
 namespace WebAddressbookTests
 {
+    [Table(Name = "addressbook")]
     public class ContactData : IEquatable<ContactData>
     {
         private string allPhones;
+
+        public ContactData()
+        {
+        }
 
         public ContactData(string firstName, string lastName)
         {
@@ -17,8 +23,13 @@ namespace WebAddressbookTests
             LastName = lastName;
         }
 
+        [Column(Name = "id"), PrimaryKey]
+        public string Id { get; set; }
+
+        [Column(Name = "firstname")]
         public string FirstName {get; set;}
 
+        [Column(Name = "lastname")]
         public string LastName { get; set; }
 
         public string Address { get; set; }
@@ -28,6 +39,9 @@ namespace WebAddressbookTests
         public string MobilePhone { get; set; }
 
         public string WorkPhone { get; set; }
+
+        [Column(Name = "deprecated")]
+        public string Deprecated { get; set; }
 
         public string AllPhones
         {
@@ -80,6 +94,14 @@ namespace WebAddressbookTests
         public override int GetHashCode()
         {
             return (FirstName + " " + LastName).GetHashCode();
+        }
+
+        public static List<ContactData> GetAll()
+        {
+            using (AddressBookDB db = new AddressBookDB())
+            {
+                return (from c in db.Contacts.Where(x => x.Deprecated == "0000-00-00 00:00:00") select c).ToList();
+            }
         }
     }
 

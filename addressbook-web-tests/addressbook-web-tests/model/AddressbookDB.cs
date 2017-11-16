@@ -4,9 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LinqToDB;
+using LinqToDB.Mapping;
 
 namespace WebAddressbookTests
 {
+    [Table(Name ="addressbook")]
     public class AddressBookDB : LinqToDB.Data.DataConnection
     {
         public AddressBookDB() : base("AddressBook")
@@ -16,5 +18,7 @@ namespace WebAddressbookTests
         public ITable<GroupData> Groups { get { return GetTable<GroupData>(); } }
 
         public ITable<ContactData> Contacts { get { return GetTable<ContactData>(); } }
+
+        public ITable<GroupContactRelation> GCR { get { return GetTable<GroupContactRelation>(); } }
     }
 }

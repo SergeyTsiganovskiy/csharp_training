@@ -132,6 +132,24 @@ namespace WebAddressbookTests
             System.Console.Out.WriteLine(endDb.Subtract(startDb));
 
         }
+
+        [Test]
+        public void TestDbConnectivity2()
+        {
+            foreach (ContactData contact in GroupData.GetAll()[0].GetContacts())
+            {
+                System.Console.Out.WriteLine(contact);
+            }
+        }
+
+        [Test]
+        public void TestDbConnectivity3()
+        {
+            foreach (ContactData contact in ContactData.GetAll())
+            {
+                System.Console.Out.WriteLine(contact.Deprecated);
+            }
+        }
     }
 }
 
