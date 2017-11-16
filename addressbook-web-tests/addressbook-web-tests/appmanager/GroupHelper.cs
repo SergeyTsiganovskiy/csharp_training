@@ -23,6 +23,13 @@ namespace WebAddressbookTests
             return this;
         }
 
+        public GroupHelper RemoveDb(GroupData group)
+        {
+            manager.Navigator.GoToGroupsPage();
+            manager.Groups.SelectGroupDb(group.Id).RemoveGroup().ReturnToGroupsPage();
+            return this;
+        }
+
         private List<GroupData> groupCache = null;
 
         public int GetGroupCount()
@@ -124,6 +131,11 @@ namespace WebAddressbookTests
             return this;
         }
 
+        public GroupHelper SelectGroupDb(String Id)
+        {
+            driver.FindElement(By.XPath("(//input[@name='selected[]' and @value='" + Id + "'])")).Click();
+            return this;
+        }
 
     }
 }

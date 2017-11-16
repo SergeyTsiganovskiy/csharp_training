@@ -14,7 +14,7 @@ using NUnit.Framework;
 namespace WebAddressbookTests
 {
     [TestFixture]
-    public class GroupCreationTests : AuthTestBase
+    public class GroupCreationTests : GroupTestBase
 
     {
         public static IEnumerable<GroupData> RandomGroupDataProvider()
@@ -93,6 +93,22 @@ namespace WebAddressbookTests
             Assert.AreEqual(oldGroups.Count + 1, app.Groups.GetGroupCount());
 
             List<GroupData> newGroups = app.Groups.GetGroupList();
+            oldGroups.Add(group);
+            oldGroups.Sort();
+            newGroups.Sort();
+            Assert.AreEqual(oldGroups, newGroups);
+        }
+
+        [Test, TestCaseSource("GroupDataProviderFromExcelFile")]
+        public void GroupCreationTestDb(GroupData group)
+        {
+            List<GroupData> oldGroups = GroupData.GetAll();
+            app.Groups.Create(group);
+
+            // hash 
+            Assert.AreEqual(oldGroups.Count + 1, app.Groups.GetGroupCount());
+
+            List<GroupData> newGroups = GroupData.GetAll();
             oldGroups.Add(group);
             oldGroups.Sort();
             newGroups.Sort();
